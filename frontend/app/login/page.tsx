@@ -33,9 +33,15 @@ export default function LoginPage() {
         setLoading(true);
         try {
             await signIn(email, password);
+            // Refresh the server-side context so the middleware picks up the
+            // new auth cookies before we navigate to a protected route.
+            router.refresh();
             router.push(redirectTo);
         } catch (err: unknown) {
-            setError(err instanceof Error ? err.message : "Sign-in failed.");
+            const msg =
+                err instanceof Error ? err.message : "Sign-in failed.";
+            console.error("[Login] error:", err);
+            setError(msg);
         } finally {
             setLoading(false);
         }

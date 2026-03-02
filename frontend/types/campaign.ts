@@ -1,14 +1,17 @@
-export type CampaignStatus = "pending" | "approved" | "rejected" | "completed";
+export type CampaignStatus = "pending" | "approved" | "rejected";
 
+/** Matches the `campaigns` table in Supabase. */
 export interface Campaign {
     id: string;
     title: string;
     description: string;
-    goal_amount: number;
-    raised_amount: number;
+    target_amount: number;
+    current_amount: number;
     status: CampaignStatus;
     image_url: string | null;
-    created_by: string;
+    category: string;
+    is_zakaat: boolean;
+    creator_id: string;
     organization_name: string | null;
     created_at: string;
     updated_at: string;
@@ -17,9 +20,11 @@ export interface Campaign {
 export interface CreateCampaignPayload {
     title: string;
     description: string;
-    goal_amount: number;
+    target_amount: number;
     image_url?: string;
     organization_name?: string;
+    category?: string;
+    is_zakaat?: boolean;
 }
 
 export interface UpdateCampaignStatusPayload {

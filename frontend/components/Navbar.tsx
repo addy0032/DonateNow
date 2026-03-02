@@ -8,7 +8,7 @@ import { useEffect, useState } from "react";
 import { useAuth } from "../context/AuthContext";
 
 const NAV_LINKS = [
-    { href: "/campaigns", label: "Explore" },
+    { href: "/explore", label: "Explore" },
     { href: "/#how-it-works", label: "How It Works" },
     { href: "/zakaat", label: "Zakaat" },
 ];

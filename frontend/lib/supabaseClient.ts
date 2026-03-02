@@ -1,4 +1,4 @@
-import { createClient } from "@supabase/supabase-js";
+import { createBrowserClient } from "@supabase/ssr";
 
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
 const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
@@ -9,4 +9,11 @@ if (!supabaseUrl || !supabaseAnonKey) {
     );
 }
 
-export const supabase = createClient(supabaseUrl, supabaseAnonKey);
+/**
+ * Browser-side Supabase client.
+ *
+ * Uses `createBrowserClient` from `@supabase/ssr` so the session is
+ * stored in **cookies** (not localStorage). This is critical because
+ * the Next.js middleware also reads cookies to verify authentication.
+ */
+export const supabase = createBrowserClient(supabaseUrl, supabaseAnonKey);

@@ -51,11 +51,13 @@ export default function RegisterPage() {
                 role,
                 organizationName: role === "NGO" ? organizationName : undefined,
             });
+            router.refresh();
             router.push("/dashboard");
         } catch (err: unknown) {
-            setGlobalError(
-                err instanceof Error ? err.message : "Registration failed.",
-            );
+            const msg =
+                err instanceof Error ? err.message : "Registration failed.";
+            console.error("[Register] error:", err);
+            setGlobalError(msg);
         } finally {
             setLoading(false);
         }
@@ -130,8 +132,8 @@ export default function RegisterPage() {
                                         type="button"
                                         onClick={() => setRole(r)}
                                         className={`flex-1 rounded-xl border px-4 py-2.5 text-sm font-semibold transition-all duration-200 ${role === r
-                                                ? "border-primary-500 bg-primary-50 text-primary-700 shadow-sm"
-                                                : "border-neutral-200 bg-white text-neutral-500 hover:border-neutral-300 hover:text-neutral-700"
+                                            ? "border-primary-500 bg-primary-50 text-primary-700 shadow-sm"
+                                            : "border-neutral-200 bg-white text-neutral-500 hover:border-neutral-300 hover:text-neutral-700"
                                             }`}
                                     >
                                         {r === "DONOR" ? "Donor" : "NGO"}

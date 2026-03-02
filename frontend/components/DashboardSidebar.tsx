@@ -32,20 +32,20 @@ interface NavItem {
 
 const ADMIN_NAV: NavItem[] = [
     { href: "/dashboard", label: "Overview", icon: LayoutDashboard },
-    { href: "/dashboard/approve-campaigns", label: "Approve Campaigns", icon: CheckCircle },
+    { href: "/dashboard/admin/campaigns", label: "Approve Campaigns", icon: CheckCircle },
     { href: "/dashboard/users", label: "Users", icon: Users },
     { href: "/dashboard/reports", label: "Reports", icon: BarChart3 },
 ];
 
 const NGO_NAV: NavItem[] = [
-    { href: "/dashboard", label: "My Campaigns", icon: LayoutDashboard },
+    { href: "/dashboard/my-campaigns", label: "My Campaigns", icon: LayoutDashboard },
     { href: "/dashboard/create-campaign", label: "Create Campaign", icon: PlusCircle },
     { href: "/dashboard/donations", label: "Donations", icon: Wallet },
 ];
 
 const DONOR_NAV: NavItem[] = [
     { href: "/dashboard", label: "My Donations", icon: Heart },
-    { href: "/dashboard/explore", label: "Explore Campaigns", icon: Search },
+    { href: "/explore", label: "Explore Campaigns", icon: Search },
     { href: "/dashboard/zakaat", label: "Zakaat History", icon: Moon },
 ];
 
