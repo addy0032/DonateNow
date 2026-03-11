@@ -1,3 +1,6 @@
+"use client";
+
+import { useScroll, useTransform, motion } from "framer-motion";
 import {
   ArrowRight,
   BookOpen,
@@ -10,27 +13,75 @@ import {
   Moon,
   Shield,
   Sparkles,
+  Star,
   TrendingUp,
   Users,
   Zap,
 } from "lucide-react";
 import Link from "next/link";
 import Navbar from "../components/Navbar";
+import AnimatedSection from "../components/AnimatedSection";
+
+/* ================================================================== */
+/*  COMPONENTS                                                        */
+/* ================================================================== */
+
+function WaveDivider({ className = "" }: { className?: string }) {
+  return (
+    <div className={`w-full overflow-hidden leading-zero ${className}`}>
+      <svg
+        className="relative block w-full h-[40px] md:h-[60px]"
+        preserveAspectRatio="none"
+        viewBox="0 0 1200 120"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <path
+          d="M321.39,56.44c58-10.79,114.16-30.13,172-41.86,82.39-16.72,168.19-17.73,250.45-.39C823.78,31,906.67,72,985.66,92.83c70.05,18.48,146.53,26.09,214.34,3V120H0V0C69.74,23.3,137.66,51.81,209.5,70.67,247.16,80.57,285.4,85.1,321.39,56.44Z"
+          fill="currentColor"
+        />
+      </svg>
+    </div>
+  );
+}
 
 /* ================================================================== */
 /*  LANDING PAGE                                                      */
 /* ================================================================== */
 
 export default function LandingPage() {
+  const { scrollY } = useScroll();
+  const backgroundY = useTransform(scrollY, [0, 1000], ["0%", "20%"]);
+
   return (
-    <div className="min-h-screen bg-neutral-50">
+    <div className="relative min-h-screen bg-neutral-50 overflow-hidden">
       <Navbar />
-      <HeroSection />
-      <TrustIndicators />
-      <HowItWorks />
-      <CategoriesGrid />
-      <ZakaatHighlight />
-      <Footer />
+
+      {/* Background Parallax Layer */}
+      <motion.div
+        className="pointer-events-none absolute inset-0 z-0"
+        style={{ y: backgroundY }}
+      >
+        <div className="absolute top-[800px] left-[-10%] h-[600px] w-[60%] rounded-full bg-teal-100/40 mix-blend-multiply blur-[120px]" />
+        <div className="absolute top-[1600px] right-[-10%] h-[500px] w-[50%] rounded-full bg-primary-100/40 mix-blend-multiply blur-[120px]" />
+      </motion.div>
+
+      <div className="relative z-10 bg-transparent">
+        <HeroSection />
+        <WaveDivider className="text-neutral-50 bg-primary-900 -mt-[1px]" />
+
+        <TrustIndicators />
+
+        <WaveDivider className="text-white bg-neutral-50" />
+        <HowItWorks />
+
+        <WaveDivider className="text-neutral-50 bg-white -mt-[1px]" />
+        <CategoriesGrid />
+
+        <Testimonials />
+
+        <ZakaatHighlight />
+        <Footer />
+      </div>
     </div>
   );
 }
@@ -41,10 +92,10 @@ export default function LandingPage() {
 
 function HeroSection() {
   return (
-    <section className="relative overflow-hidden bg-gradient-to-br from-primary-600 via-primary-700 to-primary-900">
+    <AnimatedSection className="animate-gradient relative overflow-hidden bg-gradient-to-br from-primary-600 via-primary-700 to-primary-900 pb-12">
       {/* Ambient blobs */}
-      <div className="pointer-events-none absolute top-0 left-0 h-[500px] w-[500px] rounded-full bg-primary-400/20 blur-[120px]" />
-      <div className="pointer-events-none absolute right-0 bottom-0 h-[400px] w-[400px] rounded-full bg-accent-400/15 blur-[100px]" />
+      <div className="animate-blob pointer-events-none absolute top-0 left-0 h-[500px] w-[500px] rounded-full bg-primary-400/20 blur-[120px]" />
+      <div className="animate-blob pointer-events-none absolute right-0 bottom-0 h-[400px] w-[400px] rounded-full bg-accent-400/15 blur-[100px] [animation-delay:2s]" />
 
       {/* Grid pattern overlay */}
       <div
@@ -64,22 +115,22 @@ function HeroSection() {
             Trusted by thousands of donors
           </span>
 
-          <h1 className="mt-4 text-4xl leading-tight font-extrabold tracking-tight text-white sm:text-5xl lg:text-6xl">
+          <AnimatedSection as="h1" delay={0.2} className="mt-4 text-4xl leading-tight font-extrabold tracking-tight text-white sm:text-5xl lg:text-6xl">
             Give with Trust.
             <br />
             <span className="text-primary-200">Change Lives.</span>
-          </h1>
+          </AnimatedSection>
 
-          <p className="mt-6 max-w-lg text-base leading-relaxed text-primary-100/80 sm:text-lg">
+          <AnimatedSection as="p" delay={0.3} className="mt-6 max-w-lg text-base leading-relaxed text-primary-100/80 sm:text-lg">
             DonateNow connects generous hearts with verified campaigns.
             Every donation is transparent, secure, and makes a real impact
             in communities that need it most.
-          </p>
+          </AnimatedSection>
 
-          <div className="mt-8 flex flex-wrap items-center justify-center gap-3 lg:justify-start">
+          <AnimatedSection delay={0.4} className="mt-8 flex flex-wrap items-center justify-center gap-3 lg:justify-start">
             <Link
               href="/register"
-              className="inline-flex items-center gap-2 rounded-xl bg-white px-6 py-3.5 text-sm font-bold text-primary-700 shadow-lg shadow-black/10 transition hover:scale-[1.03] hover:shadow-xl"
+              className="shine-effect inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-emerald-400 to-primary-500 px-6 py-3.5 text-sm font-bold text-white shadow-lg shadow-black/10 transition hover:scale-[1.03] hover:shadow-xl"
             >
               Start a Campaign
               <ArrowRight className="h-4 w-4" />
@@ -91,7 +142,7 @@ function HeroSection() {
               Explore Causes
               <ChevronRight className="h-4 w-4" />
             </Link>
-          </div>
+          </AnimatedSection>
         </div>
 
         {/* Right — abstract illustration placeholder */}
@@ -114,7 +165,7 @@ function HeroSection() {
           </div>
         </div>
       </div>
-    </section>
+    </AnimatedSection>
   );
 }
 
@@ -151,7 +202,7 @@ const TRUST_ITEMS = [
 
 function TrustIndicators() {
   return (
-    <section className="py-20">
+    <AnimatedSection className="py-20">
       <div className="section-container">
         <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
           {TRUST_ITEMS.map((item) => (
@@ -174,7 +225,7 @@ function TrustIndicators() {
           ))}
         </div>
       </div>
-    </section>
+    </AnimatedSection>
   );
 }
 
@@ -208,7 +259,7 @@ const STEPS = [
 
 function HowItWorks() {
   return (
-    <section id="how-it-works" className="bg-white py-20">
+    <AnimatedSection id="how-it-works" className="bg-white py-20">
       <div className="section-container">
         <div className="mb-14 text-center">
           <span className="mb-2 inline-block text-xs font-bold tracking-widest text-primary-600 uppercase">
@@ -242,7 +293,7 @@ function HowItWorks() {
           ))}
         </div>
       </div>
-    </section>
+    </AnimatedSection>
   );
 }
 
@@ -297,7 +348,7 @@ const CATEGORIES = [
 
 function CategoriesGrid() {
   return (
-    <section className="py-20">
+    <AnimatedSection className="py-20">
       <div className="section-container">
         <div className="mb-14 text-center">
           <span className="mb-2 inline-block text-xs font-bold tracking-widest text-primary-600 uppercase">
@@ -334,17 +385,111 @@ function CategoriesGrid() {
           ))}
         </div>
       </div>
-    </section>
+    </AnimatedSection>
   );
 }
 
 /* ------------------------------------------------------------------ */
-/*  5. ZAKAAT FEATURE HIGHLIGHT                                       */
+/*  5. TESTIMONIALS                                                   */
+/* ------------------------------------------------------------------ */
+
+const TESTIMONIALS = [
+  {
+    name: "Ayesha Siddiqui",
+    role: "Donor",
+    avatar: "AS",
+    color: "bg-emerald-100 text-emerald-700",
+    stars: 5,
+    quote:
+      "DonateNow made it so easy to give back. I can see exactly where my money goes, and the transparency gives me full confidence.",
+  },
+  {
+    name: "Muhammad Faisal",
+    role: "NGO Director",
+    avatar: "MF",
+    color: "bg-indigo-100 text-indigo-700",
+    stars: 5,
+    quote:
+      "We raised our entire target in 3 weeks. The platform connected us with hundreds of donors we would have never reached.",
+  },
+  {
+    name: "Fatima Khan",
+    role: "Donor",
+    avatar: "FK",
+    color: "bg-amber-100 text-amber-700",
+    stars: 5,
+    quote:
+      "I use DonateNow for my Zakaat every year. The calculator is accurate and the donation process feels secure and dignified.",
+  },
+];
+
+function Testimonials() {
+  return (
+    <AnimatedSection className="bg-neutral-50 py-20">
+      <div className="section-container">
+        <div className="mb-14 text-center">
+          <span className="mb-2 inline-block text-xs font-bold tracking-widest text-primary-600 uppercase">
+            Social Proof
+          </span>
+          <h2 className="text-3xl font-bold tracking-tight text-neutral-900 sm:text-4xl">
+            Trusted by Hundreds of Donors
+          </h2>
+          <p className="mx-auto mt-3 max-w-md text-neutral-500">
+            Real stories from real people making a difference every day.
+          </p>
+        </div>
+
+        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+          {TESTIMONIALS.map((t) => (
+            <AnimatedSection
+              key={t.name}
+              as="div"
+              className="group flex flex-col rounded-2xl border border-neutral-200/80 bg-white p-6 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-lg"
+            >
+              {/* Stars */}
+              <div className="mb-4 flex gap-0.5">
+                {Array.from({ length: t.stars }).map((_, i) => (
+                  <Star
+                    key={i}
+                    className="h-4 w-4 fill-amber-400 text-amber-400"
+                  />
+                ))}
+              </div>
+
+              {/* Quote */}
+              <p className="flex-1 text-sm leading-relaxed text-neutral-600 italic">
+                &ldquo;{t.quote}&rdquo;
+              </p>
+
+              {/* Author */}
+              <div className="mt-5 flex items-center gap-3 border-t border-neutral-100 pt-4">
+                <div
+                  className={`flex h-10 w-10 items-center justify-center rounded-full text-sm font-bold ${t.color}`}
+                >
+                  {t.avatar}
+                </div>
+                <div>
+                  <p className="text-sm font-semibold text-neutral-900">
+                    {t.name}
+                  </p>
+                  <p className="text-xs text-neutral-400">{t.role}</p>
+                </div>
+              </div>
+            </AnimatedSection>
+          ))}
+        </div>
+      </div>
+    </AnimatedSection>
+  );
+}
+
+/* ------------------------------------------------------------------ */
+/*  6. ZAKAAT FEATURE HIGHLIGHT                                       */
 /* ------------------------------------------------------------------ */
 
 function ZakaatHighlight() {
   return (
-    <section className="bg-gradient-to-br from-teal-50 via-primary-50 to-emerald-50">
+    <AnimatedSection className="bg-gradient-to-br from-teal-50 via-primary-50 to-emerald-50">
       <div className="section-container py-20">
         <div className="mx-auto flex max-w-3xl flex-col items-center gap-8 text-center lg:flex-row lg:text-left">
           {/* Icon */}
@@ -365,7 +510,7 @@ function ZakaatHighlight() {
             </p>
             <Link
               href="/zakaat"
-              className="btn-primary mt-6 inline-flex bg-gradient-to-r from-teal-600 to-emerald-600 shadow-teal-600/25"
+              className="btn-primary shine-effect mt-6 inline-flex shadow-teal-600/25"
             >
               <Hand className="h-4 w-4" />
               Calculate Zakaat
@@ -373,7 +518,7 @@ function ZakaatHighlight() {
           </div>
         </div>
       </div>
-    </section>
+    </AnimatedSection>
   );
 }
 

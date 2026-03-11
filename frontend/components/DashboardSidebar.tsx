@@ -33,6 +33,7 @@ interface NavItem {
 const ADMIN_NAV: NavItem[] = [
     { href: "/dashboard", label: "Overview", icon: LayoutDashboard },
     { href: "/dashboard/admin/campaigns", label: "Approve Campaigns", icon: CheckCircle },
+    { href: "/dashboard/admin/analytics", label: "Analytics", icon: BarChart3 },
     { href: "/dashboard/users", label: "Users", icon: Users },
     { href: "/dashboard/reports", label: "Reports", icon: BarChart3 },
 ];

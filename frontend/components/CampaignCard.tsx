@@ -19,6 +19,8 @@ interface CampaignCardProps {
     is_zakaat?: boolean;
 }
 
+import AnimatedSection from "./AnimatedSection";
+
 export default function CampaignCard({
     id,
     title,
@@ -37,7 +39,7 @@ export default function CampaignCard({
     const goal = formatCurrency(target_amount);
 
     return (
-        <div className="group relative flex flex-col overflow-hidden rounded-2xl border border-neutral-200/80 bg-white shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-lg">
+        <AnimatedSection as="div" className="group relative flex flex-col overflow-hidden rounded-2xl border border-neutral-200/80 bg-white shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-lg">
             {/* ---- Image ---- */}
             <div className="relative h-48 w-full overflow-hidden bg-gradient-to-br from-primary-100 to-accent-100">
                 {image_url ? (
@@ -106,7 +108,7 @@ export default function CampaignCard({
                     Donate Now
                 </Link>
             </div>
-        </div>
+        </AnimatedSection>
     );
 }
 

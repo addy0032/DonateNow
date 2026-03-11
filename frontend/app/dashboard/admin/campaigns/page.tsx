@@ -13,6 +13,10 @@ import {
     updateCampaignStatus,
 } from "../../../../services/campaignService";
 import type { Campaign, CampaignStatus } from "../../../../types/campaign";
+import AnimatedSection from "../../../../components/AnimatedSection";
+import AnimatedButton from "../../../../components/AnimatedButton";
+import EmptyState from "../../../../components/EmptyState";
+import { useToast } from "../../../../components/Toast";
 
 /* ------------------------------------------------------------------ */
 /*  Page                                                              */
@@ -21,7 +25,7 @@ import type { Campaign, CampaignStatus } from "../../../../types/campaign";
 export default function AdminCampaignsPage() {
     const [campaigns, setCampaigns] = useState<Campaign[]>([]);
     const [loading, setLoading] = useState(true);
-    const [toast, setToast] = useState("");
+    const { toast: showToast } = useToast();
 
     // Confirmation modal state
     const [modal, setModal] = useState<{
@@ -60,14 +64,14 @@ export default function AdminCampaignsPage() {
         setActionLoading(true);
         try {
             await updateCampaignStatus(modal.campaign.id, modal.action);
-            setToast(
+            showToast(
                 modal.action === "approved"
                     ? `"${modal.campaign.title}" has been approved ✓`
                     : `"${modal.campaign.title}" has been rejected`,
+                modal.action === "approved" ? "success" : "error",
             );
             setModal(null);
-            load(); // refresh
-            setTimeout(() => setToast(""), 3500);
+            load();
         } catch (err) {
             console.error("[Admin] status update error:", err);
         } finally {
@@ -77,16 +81,6 @@ export default function AdminCampaignsPage() {
 
     return (
         <div className="relative">
-            {/* Toast */}
-            {toast && (
-                <div className="fixed top-6 right-6 z-50 animate-[fadeSlideDown_0.3s_ease-out] rounded-xl border border-primary-200 bg-white px-5 py-3 text-sm font-medium text-neutral-800 shadow-lg">
-                    <div className="flex items-center gap-2">
-                        <CheckCircle className="h-4 w-4 text-primary-600" />
-                        {toast}
-                    </div>
-                </div>
-            )}
-
             {/* Header */}
             <div className="mb-8">
                 <div className="flex items-center gap-2.5">
@@ -126,19 +120,13 @@ export default function AdminCampaignsPage() {
             {loading ? (
                 <SkeletonTable />
             ) : pendingCampaigns.length === 0 ? (
-                <div className="flex flex-col items-center rounded-2xl border border-dashed border-neutral-300 py-20 text-center">
-                    <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-emerald-50">
-                        <CheckCircle className="h-8 w-8 text-emerald-400" />
-                    </div>
-                    <h3 className="mt-5 text-lg font-bold text-neutral-800">
-                        All caught up!
-                    </h3>
-                    <p className="mt-2 max-w-sm text-sm text-neutral-500">
-                        No campaigns are pending review right now.
-                    </p>
-                </div>
+                <EmptyState
+                    icon={<CheckCircle className="h-8 w-8" />}
+                    title="All caught up!"
+                    description="No campaigns are pending review right now. New submissions will appear here automatically."
+                />
             ) : (
-                <div className="overflow-hidden rounded-2xl border border-neutral-200 bg-white shadow-sm">
+                <AnimatedSection className="overflow-hidden rounded-2xl border border-neutral-200 bg-white shadow-sm">
                     <div className="overflow-x-auto">
                         <table className="w-full text-left text-sm">
                             <thead>
@@ -191,7 +179,7 @@ export default function AdminCampaignsPage() {
                                         </td>
                                         <td className="px-5 py-4">
                                             <div className="flex items-center justify-end gap-2">
-                                                <button
+                                                <AnimatedButton
                                                     type="button"
                                                     onClick={() =>
                                                         setModal({ campaign: c, action: "approved" })
@@ -200,8 +188,8 @@ export default function AdminCampaignsPage() {
                                                 >
                                                     <CheckCircle className="h-3.5 w-3.5" />
                                                     Approve
-                                                </button>
-                                                <button
+                                                </AnimatedButton>
+                                                <AnimatedButton
                                                     type="button"
                                                     onClick={() =>
                                                         setModal({ campaign: c, action: "rejected" })
@@ -210,7 +198,7 @@ export default function AdminCampaignsPage() {
                                                 >
                                                     <XCircle className="h-3.5 w-3.5" />
                                                     Reject
-                                                </button>
+                                                </AnimatedButton>
                                             </div>
                                         </td>
                                     </tr>
@@ -218,7 +206,7 @@ export default function AdminCampaignsPage() {
                             </tbody>
                         </table>
                     </div>
-                </div>
+                </AnimatedSection>
             )}
 
             {/* Confirmation modal */}
@@ -228,8 +216,8 @@ export default function AdminCampaignsPage() {
                         <div className="flex items-center gap-3">
                             <div
                                 className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-xl ${modal.action === "approved"
-                                        ? "bg-emerald-100 text-emerald-600"
-                                        : "bg-red-100 text-red-600"
+                                    ? "bg-emerald-100 text-emerald-600"
+                                    : "bg-red-100 text-red-600"
                                     }`}
                             >
                                 {modal.action === "approved" ? (
@@ -263,21 +251,21 @@ export default function AdminCampaignsPage() {
                         </div>
 
                         <div className="mt-6 flex gap-3">
-                            <button
+                            <AnimatedButton
                                 type="button"
                                 onClick={() => setModal(null)}
                                 disabled={actionLoading}
                                 className="flex-1 rounded-xl border border-neutral-200 bg-white px-4 py-2.5 text-sm font-semibold text-neutral-600 transition hover:bg-neutral-50"
                             >
                                 Cancel
-                            </button>
-                            <button
+                            </AnimatedButton>
+                            <AnimatedButton
                                 type="button"
                                 onClick={handleConfirm}
                                 disabled={actionLoading}
                                 className={`flex-1 rounded-xl px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition ${modal.action === "approved"
-                                        ? "bg-emerald-600 hover:bg-emerald-700"
-                                        : "bg-red-600 hover:bg-red-700"
+                                    ? "bg-emerald-600 hover:bg-emerald-700"
+                                    : "bg-red-600 hover:bg-red-700"
                                     }`}
                             >
                                 {actionLoading
@@ -285,7 +273,7 @@ export default function AdminCampaignsPage() {
                                     : modal.action === "approved"
                                         ? "Yes, Approve"
                                         : "Yes, Reject"}
-                            </button>
+                            </AnimatedButton>
                         </div>
                     </div>
                 </div>

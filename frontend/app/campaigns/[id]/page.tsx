@@ -197,7 +197,7 @@ export default function CampaignDetailPage() {
                                 </div>
                                 <div className="mt-3 h-2.5 w-full overflow-hidden rounded-full bg-neutral-100">
                                     <div
-                                        className="h-full rounded-full bg-gradient-to-r from-primary-400 to-primary-600 transition-all duration-700"
+                                        className="h-full rounded-full bg-gradient-to-r from-primary-400 to-primary-600 transition-all duration-700 ease-out"
                                         style={{ width: `${progress}%` }}
                                     />
                                 </div>

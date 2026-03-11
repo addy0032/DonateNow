@@ -2,6 +2,7 @@
 
 import { CheckCircle, Heart, Lock, X } from "lucide-react";
 import { type FormEvent, useState } from "react";
+import AnimatedButton from "./AnimatedButton";
 import { useAuth } from "../context/AuthContext";
 import { createDonation } from "../services/donationService";
 
@@ -150,7 +151,7 @@ export default function DonationModal({
                             <div className="mt-5">
                                 <div className="h-2 w-full overflow-hidden rounded-full bg-neutral-100">
                                     <div
-                                        className="h-full rounded-full bg-gradient-to-r from-primary-400 to-primary-600 transition-all duration-500"
+                                        className="h-full rounded-full bg-gradient-to-r from-primary-400 to-primary-600 transition-all duration-500 ease-out"
                                         style={{ width: `${progress}%` }}
                                     />
                                 </div>
@@ -174,7 +175,7 @@ export default function DonationModal({
                                 </p>
                                 <div className="flex flex-wrap gap-2">
                                     {SUGGESTED.map((s) => (
-                                        <button
+                                        <AnimatedButton
                                             key={s}
                                             type="button"
                                             onClick={() => setAmount(String(s))}
@@ -184,7 +185,7 @@ export default function DonationModal({
                                                 }`}
                                         >
                                             {formatCurrency(s)}
-                                        </button>
+                                        </AnimatedButton>
                                     ))}
                                 </div>
                             </div>
@@ -208,7 +209,8 @@ export default function DonationModal({
                                         value={amount}
                                         onChange={(e) => setAmount(e.target.value)}
                                         placeholder="Enter amount"
-                                        className="input-field pl-14 text-lg font-semibold"
+                                        className="input-field text-lg font-semibold"
+                                        style={{ paddingLeft: "3.5rem" }}
                                     />
                                 </div>
                             </div>
@@ -263,7 +265,7 @@ export default function DonationModal({
                             )}
 
                             {/* Submit */}
-                            <button
+                            <AnimatedButton
                                 type="submit"
                                 disabled={loading || !amount}
                                 className="btn-primary flex w-full items-center justify-center gap-2.5 py-3.5 text-base disabled:opacity-50"
@@ -278,7 +280,7 @@ export default function DonationModal({
                                     : amount
                                         ? `Donate ${formatCurrency(Number(amount))} Securely`
                                         : "Donate Securely"}
-                            </button>
+                            </AnimatedButton>
 
                             <p className="mt-3 text-center text-[11px] text-neutral-400">
                                 🔒 Your payment is secure. All donations are tracked

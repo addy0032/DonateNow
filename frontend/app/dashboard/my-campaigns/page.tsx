@@ -12,6 +12,8 @@ import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
 import { getMyCampaigns } from "../../../services/campaignService";
 import type { Campaign, CampaignStatus } from "../../../types/campaign";
+import AnimatedSection from "../../../components/AnimatedSection";
+import EmptyState from "../../../components/EmptyState";
 
 /* ------------------------------------------------------------------ */
 /*  Status badge config                                               */
@@ -69,7 +71,7 @@ export default function MyCampaignsPage() {
             </div>
 
             {/* Analytics cards */}
-            <div className="mb-8 grid gap-4 sm:grid-cols-3">
+            <AnimatedSection className="mb-8 grid gap-4 sm:grid-cols-3">
                 <StatCard
                     icon={<BarChart3 className="h-5 w-5 text-primary-600" />}
                     label="Total Campaigns"
@@ -85,17 +87,22 @@ export default function MyCampaignsPage() {
                     label="Pending Review"
                     value={String(stats.pending)}
                 />
-            </div>
+            </AnimatedSection>
 
-            {/* Campaign grid or empty state */}
             {campaigns.length === 0 ? (
-                <EmptyState />
+                <EmptyState
+                    icon={<PlusCircle className="h-8 w-8" />}
+                    title="No campaigns yet"
+                    description="Start making a difference — create your first campaign and reach donors who care."
+                    actionLabel="Create Campaign"
+                    actionHref="/dashboard/create-campaign"
+                />
             ) : (
-                <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+                <AnimatedSection className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
                     {campaigns.map((campaign) => (
                         <CampaignCardWithStatus key={campaign.id} campaign={campaign} />
                     ))}
-                </div>
+                </AnimatedSection>
             )}
         </div>
     );
@@ -206,30 +213,6 @@ function StatCard({
 /* ------------------------------------------------------------------ */
 /*  Empty state                                                       */
 /* ------------------------------------------------------------------ */
-
-function EmptyState() {
-    return (
-        <div className="flex flex-col items-center rounded-2xl border border-dashed border-neutral-300 py-20 text-center">
-            <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-primary-50">
-                <PlusCircle className="h-8 w-8 text-primary-400" />
-            </div>
-            <h3 className="mt-5 text-lg font-bold text-neutral-800">
-                No campaigns yet
-            </h3>
-            <p className="mt-2 max-w-sm text-sm text-neutral-500">
-                Start making a difference — create your first campaign and reach
-                donors who care.
-            </p>
-            <Link
-                href="/dashboard/create-campaign"
-                className="btn-primary mt-6 inline-flex items-center gap-2 py-2.5 text-sm"
-            >
-                <PlusCircle className="h-4 w-4" />
-                Create Campaign
-            </Link>
-        </div>
-    );
-}
 
 /* ------------------------------------------------------------------ */
 /*  Skeleton                                                          */

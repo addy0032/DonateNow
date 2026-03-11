@@ -120,8 +120,8 @@ export default function ZakaatPage() {
                                         Cash, savings, gold, silver, investments, business stock, property held for sale
                                     </p>
                                     <div className="relative">
-                                        <span className="absolute top-1/2 left-4 -translate-y-1/2 text-sm font-semibold text-neutral-400">
-                                            ₨
+                                        <span className="pointer-events-none absolute top-1/2 left-4 -translate-y-1/2 select-none text-base font-semibold text-neutral-400">
+                                            Rs
                                         </span>
                                         <input
                                             id="zakaat-assets"
@@ -130,7 +130,8 @@ export default function ZakaatPage() {
                                             value={assets}
                                             onChange={(e) => setAssets(e.target.value)}
                                             placeholder="0"
-                                            className="input-field pl-10 text-lg font-semibold"
+                                            className="input-field text-lg font-semibold"
+                                            style={{ paddingLeft: "3.5rem" }}
                                         />
                                     </div>
                                 </div>
@@ -147,8 +148,8 @@ export default function ZakaatPage() {
                                         Debts, pending bills, loans, outstanding dues
                                     </p>
                                     <div className="relative">
-                                        <span className="absolute top-1/2 left-4 -translate-y-1/2 text-sm font-semibold text-neutral-400">
-                                            ₨
+                                        <span className="pointer-events-none absolute top-1/2 left-4 -translate-y-1/2 select-none text-base font-semibold text-neutral-400">
+                                            Rs
                                         </span>
                                         <input
                                             id="zakaat-liabilities"
@@ -157,7 +158,8 @@ export default function ZakaatPage() {
                                             value={liabilities}
                                             onChange={(e) => setLiabilities(e.target.value)}
                                             placeholder="0"
-                                            className="input-field pl-10 text-lg font-semibold"
+                                            className="input-field text-lg font-semibold"
+                                            style={{ paddingLeft: "3.5rem" }}
                                         />
                                     </div>
                                 </div>
