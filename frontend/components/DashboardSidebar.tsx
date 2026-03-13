@@ -38,14 +38,11 @@ const ADMIN_NAV: NavItem[] = [
     { href: "/dashboard/admin/ngo-verifications", label: "NGO Verifications", icon: Shield },
     { href: "/dashboard/admin/admin-requests", label: "Admin Requests", icon: ShieldCheck },
     { href: "/dashboard/admin/analytics", label: "Analytics", icon: BarChart3 },
-    { href: "/dashboard/users", label: "Users", icon: Users },
-    { href: "/dashboard/reports", label: "Reports", icon: BarChart3 },
 ];
 
 const NGO_NAV: NavItem[] = [
     { href: "/dashboard/my-campaigns", label: "My Campaigns", icon: LayoutDashboard },
     { href: "/dashboard/create-campaign", label: "Create Campaign", icon: PlusCircle },
-    { href: "/dashboard/donations", label: "Donations", icon: Wallet },
     { href: "/dashboard/ngo-verification", label: "Verification", icon: Shield },
 ];
 

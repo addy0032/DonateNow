@@ -4,26 +4,31 @@ import { useScroll, useTransform, motion } from "framer-motion";
 import {
   ArrowRight,
   BookOpen,
+  Calculator,
+  CheckCircle,
   ChevronRight,
   Globe,
   GraduationCap,
   Hand,
   Heart,
+  HeartHandshake,
   Leaf,
   Moon,
   Shield,
   Sparkles,
   Star,
+  Stethoscope,
   TrendingUp,
   Users,
   Zap,
 } from "lucide-react";
+import Image from "next/image";
 import Link from "next/link";
 import Navbar from "../components/Navbar";
 import AnimatedSection from "../components/AnimatedSection";
 
 /* ================================================================== */
-/*  COMPONENTS                                                        */
+/*  WAVE DIVIDER                                                      */
 /* ================================================================== */
 
 function WaveDivider({ className = "" }: { className?: string }) {
@@ -69,7 +74,7 @@ export default function LandingPage() {
         <HeroSection />
         <WaveDivider className="text-neutral-50 bg-primary-900 -mt-[1px]" />
 
-        <TrustIndicators />
+        <CommunityImpact />
 
         <WaveDivider className="text-white bg-neutral-50" />
         <HowItWorks />
@@ -79,7 +84,10 @@ export default function LandingPage() {
 
         <Testimonials />
 
-        <ZakaatHighlight />
+        <ZakaatSection />
+
+        <TrustSection />
+
         <Footer />
       </div>
     </div>
@@ -87,19 +95,29 @@ export default function LandingPage() {
 }
 
 /* ------------------------------------------------------------------ */
-/*  1. HERO SECTION                                                   */
+/*  1. HERO SECTION — Kashmir Background                              */
 /* ------------------------------------------------------------------ */
 
 function HeroSection() {
   return (
-    <AnimatedSection className="animate-gradient relative overflow-hidden bg-gradient-to-br from-primary-600 via-primary-700 to-primary-900 pb-12">
-      {/* Ambient blobs */}
-      <div className="animate-blob pointer-events-none absolute top-0 left-0 h-[500px] w-[500px] rounded-full bg-primary-400/20 blur-[120px]" />
-      <div className="animate-blob pointer-events-none absolute right-0 bottom-0 h-[400px] w-[400px] rounded-full bg-accent-400/15 blur-[100px] [animation-delay:2s]" />
+    <AnimatedSection className="relative overflow-hidden pb-12">
+      {/* Background image */}
+      <div className="absolute inset-0 z-0">
+        <Image
+          src="/kashmir/hero-kashmir.jpg"
+          alt="Kashmir Valley"
+          fill
+          className="object-cover"
+          priority
+          quality={85}
+        />
+        {/* Dark overlay for readability */}
+        <div className="absolute inset-0 bg-gradient-to-br from-primary-900/80 via-primary-800/70 to-emerald-900/75" />
+      </div>
 
       {/* Grid pattern overlay */}
       <div
-        className="pointer-events-none absolute inset-0 opacity-[0.04]"
+        className="pointer-events-none absolute inset-0 z-[1] opacity-[0.03]"
         style={{
           backgroundImage:
             "radial-gradient(circle, white 1px, transparent 1px)",
@@ -112,55 +130,61 @@ function HeroSection() {
         <div className="flex-1">
           <span className="mb-4 inline-flex items-center gap-1.5 rounded-full border border-white/20 bg-white/10 px-4 py-1.5 text-xs font-semibold tracking-wide text-white/90 backdrop-blur-sm">
             <Sparkles className="h-3.5 w-3.5" />
-            Trusted by thousands of donors
+            Trusted by hundreds of donors across Kashmir
           </span>
 
           <AnimatedSection as="h1" delay={0.2} className="mt-4 text-4xl leading-tight font-extrabold tracking-tight text-white sm:text-5xl lg:text-6xl">
-            Give with Trust.
+            Support Your Community.
             <br />
-            <span className="text-primary-200">Change Lives.</span>
+            <span className="text-emerald-300">Give with Trust.</span>
           </AnimatedSection>
 
-          <AnimatedSection as="p" delay={0.3} className="mt-6 max-w-lg text-base leading-relaxed text-primary-100/80 sm:text-lg">
-            DonateNow connects generous hearts with verified campaigns.
-            Every donation is transparent, secure, and makes a real impact
-            in communities that need it most.
+          <AnimatedSection as="p" delay={0.3} className="mt-6 max-w-lg text-base leading-relaxed text-white/80 sm:text-lg">
+            A transparent platform connecting donors with verified causes
+            across Kashmir. Support education, healthcare, and community
+            welfare through secure and trusted donations.
           </AnimatedSection>
 
           <AnimatedSection delay={0.4} className="mt-8 flex flex-wrap items-center justify-center gap-3 lg:justify-start">
             <Link
-              href="/register"
-              className="shine-effect inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-emerald-400 to-primary-500 px-6 py-3.5 text-sm font-bold text-white shadow-lg shadow-black/10 transition hover:scale-[1.03] hover:shadow-xl"
+              href="/explore"
+              className="shine-effect inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-emerald-400 to-teal-500 px-6 py-3.5 text-sm font-bold text-white shadow-lg shadow-black/10 transition hover:scale-[1.03] hover:shadow-xl"
             >
-              Start a Campaign
+              Explore Campaigns
               <ArrowRight className="h-4 w-4" />
             </Link>
             <Link
-              href="/campaigns"
+              href="/register"
               className="inline-flex items-center gap-2 rounded-xl border border-white/20 bg-white/10 px-6 py-3.5 text-sm font-semibold text-white backdrop-blur-sm transition hover:bg-white/20"
             >
-              Explore Causes
+              Start a Campaign
               <ChevronRight className="h-4 w-4" />
             </Link>
           </AnimatedSection>
+
+          {/* Zakaat/Sadaqah line */}
+          <AnimatedSection delay={0.5} className="mt-5">
+            <p className="flex items-center justify-center gap-1.5 text-xs text-white/50 lg:justify-start">
+              <Moon className="h-3 w-3" />
+              Zakaat and Sadaqah contributions supported.
+            </p>
+          </AnimatedSection>
         </div>
 
-        {/* Right — abstract illustration placeholder */}
+        {/* Right — abstract illustration */}
         <div className="hidden flex-1 items-center justify-center lg:flex">
           <div className="relative">
-            {/* Main circle */}
             <div className="flex h-72 w-72 items-center justify-center rounded-full border border-white/10 bg-white/5 backdrop-blur-lg xl:h-80 xl:w-80">
-              <Heart className="h-24 w-24 text-white/30" strokeWidth={1} />
+              <HeartHandshake className="h-24 w-24 text-white/25" strokeWidth={1} />
             </div>
-            {/* Floating orbit circles */}
             <div className="absolute -top-4 -right-4 flex h-16 w-16 items-center justify-center rounded-2xl bg-white/10 backdrop-blur-sm">
-              <GraduationCap className="h-7 w-7 text-primary-200" />
+              <GraduationCap className="h-7 w-7 text-emerald-200" />
             </div>
             <div className="absolute -bottom-2 -left-6 flex h-14 w-14 items-center justify-center rounded-2xl bg-white/10 backdrop-blur-sm">
-              <Globe className="h-6 w-6 text-primary-200" />
+              <Globe className="h-6 w-6 text-emerald-200" />
             </div>
-            <div className="absolute -right-8 bottom-12 flex h-12 w-12 items-center justify-center rounded-full bg-accent-400/20 backdrop-blur-sm">
-              <Leaf className="h-5 w-5 text-accent-200" />
+            <div className="absolute -right-8 bottom-12 flex h-12 w-12 items-center justify-center rounded-full bg-teal-400/20 backdrop-blur-sm">
+              <Moon className="h-5 w-5 text-teal-200" />
             </div>
           </div>
         </div>
@@ -170,45 +194,58 @@ function HeroSection() {
 }
 
 /* ------------------------------------------------------------------ */
-/*  2. TRUST INDICATORS                                               */
+/*  2. COMMUNITY IMPACT                                               */
 /* ------------------------------------------------------------------ */
 
-const TRUST_ITEMS = [
+const IMPACT_CARDS = [
   {
-    icon: Shield,
-    title: "Verified Campaigns",
+    icon: GraduationCap,
+    title: "Education Support",
     description:
-      "Every campaign is reviewed and approved by our team before going live.",
-    color: "text-primary-600",
-    bg: "bg-primary-50",
+      "Fund schools, scholarships, and educational programs for underprivileged children across Kashmiri communities.",
+    color: "text-blue-600",
+    bg: "bg-blue-50",
   },
   {
-    icon: Zap,
-    title: "Secure Donations",
+    icon: Stethoscope,
+    title: "Healthcare Assistance",
     description:
-      "Bank-grade encryption protects every transaction. Your data is always safe.",
-    color: "text-accent-600",
-    bg: "bg-accent-50",
+      "Support medical camps, hospital funding, and healthcare access for remote areas in the Kashmir valley.",
+    color: "text-rose-600",
+    bg: "bg-rose-50",
   },
   {
-    icon: TrendingUp,
-    title: "Real-time Transparency",
+    icon: Users,
+    title: "Community Welfare",
     description:
-      "Track exactly where your money goes with live progress updates.",
+      "Empower communities through livelihood programs, orphan care, and disaster relief across the region.",
     color: "text-emerald-600",
     bg: "bg-emerald-50",
   },
 ];
 
-function TrustIndicators() {
+function CommunityImpact() {
   return (
     <AnimatedSection className="py-20">
       <div className="section-container">
+        <div className="mb-14 text-center">
+          <span className="mb-2 inline-block text-xs font-bold tracking-widest text-primary-600 uppercase">
+            Our Mission
+          </span>
+          <h2 className="text-3xl font-bold tracking-tight text-neutral-900 sm:text-4xl">
+            Supporting Communities Across Kashmir
+          </h2>
+          <p className="mx-auto mt-3 max-w-md text-neutral-500">
+            Your generosity empowers real change in education, healthcare,
+            and community welfare.
+          </p>
+        </div>
+
         <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-          {TRUST_ITEMS.map((item) => (
+          {IMPACT_CARDS.map((item) => (
             <div
               key={item.title}
-              className="card group flex flex-col items-start gap-4 p-7"
+              className="card group flex flex-col items-start gap-4 p-7 transition-all duration-300 hover:-translate-y-1 hover:shadow-lg"
             >
               <div
                 className={`flex h-12 w-12 items-center justify-center rounded-xl ${item.bg} transition group-hover:scale-110`}
@@ -253,7 +290,7 @@ const STEPS = [
     icon: Heart,
     title: "Receive Donations",
     description:
-      "Start collecting donations from generous supporters worldwide.",
+      "Start collecting donations from generous supporters across Kashmir.",
   },
 ];
 
@@ -276,7 +313,6 @@ function HowItWorks() {
         <div className="grid gap-10 sm:grid-cols-2 lg:grid-cols-3">
           {STEPS.map((item) => (
             <div key={item.step} className="group text-center">
-              {/* Step badge */}
               <div className="relative mx-auto mb-6 flex h-16 w-16 items-center justify-center rounded-2xl bg-primary-50 transition group-hover:bg-primary-100 group-hover:scale-110">
                 <item.icon className="h-7 w-7 text-primary-600" />
                 <span className="absolute -top-2 -right-2 flex h-7 w-7 items-center justify-center rounded-full bg-primary-600 text-[10px] font-bold text-white shadow-lg shadow-primary-600/30">
@@ -302,48 +338,12 @@ function HowItWorks() {
 /* ------------------------------------------------------------------ */
 
 const CATEGORIES = [
-  {
-    name: "Education",
-    icon: GraduationCap,
-    color: "from-blue-500 to-blue-600",
-    bg: "bg-blue-50",
-    textColor: "text-blue-600",
-  },
-  {
-    name: "Healthcare",
-    icon: Heart,
-    color: "from-rose-500 to-rose-600",
-    bg: "bg-rose-50",
-    textColor: "text-rose-600",
-  },
-  {
-    name: "Women Empowerment",
-    icon: Users,
-    color: "from-purple-500 to-purple-600",
-    bg: "bg-purple-50",
-    textColor: "text-purple-600",
-  },
-  {
-    name: "Environment",
-    icon: Leaf,
-    color: "from-emerald-500 to-emerald-600",
-    bg: "bg-emerald-50",
-    textColor: "text-emerald-600",
-  },
-  {
-    name: "Rural Development",
-    icon: Globe,
-    color: "from-amber-500 to-amber-600",
-    bg: "bg-amber-50",
-    textColor: "text-amber-600",
-  },
-  {
-    name: "Zakaat",
-    icon: Moon,
-    color: "from-teal-500 to-teal-600",
-    bg: "bg-teal-50",
-    textColor: "text-teal-600",
-  },
+  { name: "Education", icon: GraduationCap, bg: "bg-blue-50", textColor: "text-blue-600" },
+  { name: "Healthcare", icon: Heart, bg: "bg-rose-50", textColor: "text-rose-600" },
+  { name: "Women Empowerment", icon: Users, bg: "bg-purple-50", textColor: "text-purple-600" },
+  { name: "Environment", icon: Leaf, bg: "bg-emerald-50", textColor: "text-emerald-600" },
+  { name: "Rural Development", icon: Globe, bg: "bg-amber-50", textColor: "text-amber-600" },
+  { name: "Zakaat", icon: Moon, bg: "bg-teal-50", textColor: "text-teal-600" },
 ];
 
 function CategoriesGrid() {
@@ -366,7 +366,7 @@ function CategoriesGrid() {
           {CATEGORIES.map((cat) => (
             <Link
               key={cat.name}
-              href="/campaigns"
+              href="/explore"
               className="card group flex items-center gap-4 p-5 transition-all duration-300 hover:shadow-lg hover:-translate-y-1"
             >
               <div
@@ -401,7 +401,7 @@ const TESTIMONIALS = [
     color: "bg-emerald-100 text-emerald-700",
     stars: 5,
     quote:
-      "DonateNow made it so easy to give back. I can see exactly where my money goes, and the transparency gives me full confidence.",
+      "DonateNow made it so easy to support causes in Kashmir. I can see exactly where my Zakaat goes, and the transparency gives me full confidence.",
   },
   {
     name: "Muhammad Faisal",
@@ -410,7 +410,7 @@ const TESTIMONIALS = [
     color: "bg-indigo-100 text-indigo-700",
     stars: 5,
     quote:
-      "We raised our entire target in 3 weeks. The platform connected us with hundreds of donors we would have never reached.",
+      "We raised our entire target in 3 weeks. The platform connected us with hundreds of donors we would have never reached across the valley.",
   },
   {
     name: "Fatima Khan",
@@ -429,7 +429,7 @@ function Testimonials() {
       <div className="section-container">
         <div className="mb-14 text-center">
           <span className="mb-2 inline-block text-xs font-bold tracking-widest text-primary-600 uppercase">
-            Social Proof
+            Community Voices
           </span>
           <h2 className="text-3xl font-bold tracking-tight text-neutral-900 sm:text-4xl">
             Trusted by Hundreds of Donors
@@ -446,7 +446,6 @@ function Testimonials() {
               as="div"
               className="group flex flex-col rounded-2xl border border-neutral-200/80 bg-white p-6 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-lg"
             >
-              {/* Stars */}
               <div className="mb-4 flex gap-0.5">
                 {Array.from({ length: t.stars }).map((_, i) => (
                   <Star
@@ -455,13 +454,9 @@ function Testimonials() {
                   />
                 ))}
               </div>
-
-              {/* Quote */}
               <p className="flex-1 text-sm leading-relaxed text-neutral-600 italic">
                 &ldquo;{t.quote}&rdquo;
               </p>
-
-              {/* Author */}
               <div className="mt-5 flex items-center gap-3 border-t border-neutral-100 pt-4">
                 <div
                   className={`flex h-10 w-10 items-center justify-center rounded-full text-sm font-bold ${t.color}`}
@@ -484,12 +479,12 @@ function Testimonials() {
 }
 
 /* ------------------------------------------------------------------ */
-/*  6. ZAKAAT FEATURE HIGHLIGHT                                       */
+/*  6. ZAKAAT + SADAQAH SECTION                                       */
 /* ------------------------------------------------------------------ */
 
-function ZakaatHighlight() {
+function ZakaatSection() {
   return (
-    <AnimatedSection className="bg-gradient-to-br from-teal-50 via-primary-50 to-emerald-50">
+    <AnimatedSection className="bg-gradient-to-br from-teal-50 via-emerald-50 to-green-50">
       <div className="section-container py-20">
         <div className="mx-auto flex max-w-3xl flex-col items-center gap-8 text-center lg:flex-row lg:text-left">
           {/* Icon */}
@@ -500,19 +495,20 @@ function ZakaatHighlight() {
           {/* Copy */}
           <div className="flex-1">
             <h2 className="text-2xl font-bold tracking-tight text-neutral-900 sm:text-3xl">
-              Zakaat Made Simple
+              Fulfill Your Zakaat with Transparency
             </h2>
             <p className="mt-3 leading-relaxed text-neutral-600">
-              Calculate and distribute your Zakaat with full transparency.
-              DonateNow connects your obligation with verified, eligible
-              recipients — ensuring your contribution reaches those who need
-              it most.
+              Donate your Zakaat with confidence. Verified campaigns ensure
+              that your contributions reach those who truly need them.
+            </p>
+            <p className="mt-2 text-xs text-neutral-400">
+              Zakaat calculations follow the standard 2.5% rule.
             </p>
             <Link
               href="/zakaat"
               className="btn-primary shine-effect mt-6 inline-flex shadow-teal-600/25"
             >
-              <Hand className="h-4 w-4" />
+              <Calculator className="h-4 w-4" />
               Calculate Zakaat
             </Link>
           </div>
@@ -523,7 +519,79 @@ function ZakaatHighlight() {
 }
 
 /* ------------------------------------------------------------------ */
-/*  6. FOOTER                                                         */
+/*  7. TRUST SECTION                                                  */
+/* ------------------------------------------------------------------ */
+
+const TRUST_FEATURES = [
+  {
+    icon: Shield,
+    title: "Verified NGOs",
+    description:
+      "Every NGO is document-verified before they can create campaigns on the platform.",
+    color: "text-primary-600",
+    bg: "bg-primary-50",
+  },
+  {
+    icon: TrendingUp,
+    title: "Transparent Donations",
+    description:
+      "Track exactly where your money goes with real-time progress updates on every campaign.",
+    color: "text-emerald-600",
+    bg: "bg-emerald-50",
+  },
+  {
+    icon: HeartHandshake,
+    title: "Community Focused",
+    description:
+      "Built specifically for the Kashmiri community — supporting causes that matter most to you.",
+    color: "text-teal-600",
+    bg: "bg-teal-50",
+  },
+];
+
+function TrustSection() {
+  return (
+    <AnimatedSection className="bg-white py-20">
+      <div className="section-container">
+        <div className="mb-14 text-center">
+          <span className="mb-2 inline-block text-xs font-bold tracking-widest text-primary-600 uppercase">
+            Why DonateNow
+          </span>
+          <h2 className="text-3xl font-bold tracking-tight text-neutral-900 sm:text-4xl">
+            Built for Community Trust
+          </h2>
+          <p className="mx-auto mt-3 max-w-md text-neutral-500">
+            A platform designed with transparency, security, and community values at its core.
+          </p>
+        </div>
+
+        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+          {TRUST_FEATURES.map((item) => (
+            <div
+              key={item.title}
+              className="card group flex flex-col items-center gap-4 p-7 text-center transition-all duration-300 hover:-translate-y-1 hover:shadow-lg"
+            >
+              <div
+                className={`flex h-14 w-14 items-center justify-center rounded-2xl ${item.bg} transition group-hover:scale-110`}
+              >
+                <item.icon className={`h-7 w-7 ${item.color}`} />
+              </div>
+              <h3 className="text-lg font-bold text-neutral-900">
+                {item.title}
+              </h3>
+              <p className="text-sm leading-relaxed text-neutral-500">
+                {item.description}
+              </p>
+            </div>
+          ))}
+        </div>
+      </div>
+    </AnimatedSection>
+  );
+}
+
+/* ------------------------------------------------------------------ */
+/*  8. FOOTER                                                         */
 /* ------------------------------------------------------------------ */
 
 function Footer() {
@@ -542,30 +610,33 @@ function Footer() {
               </span>
             </div>
             <p className="mt-2 max-w-xs text-sm text-neutral-500">
-              Empowering generosity through trust, transparency, and
-              technology.
+              Dedicated to supporting humanitarian causes and community
+              welfare across Kashmir.
+            </p>
+            <p className="mt-1 text-xs text-neutral-400 italic">
+              Empowering generosity through technology.
             </p>
           </div>
 
           {/* Links */}
           <div className="flex gap-8 text-sm">
             <Link
-              href="/campaigns"
+              href="/explore"
               className="text-neutral-500 transition hover:text-primary-600"
             >
-              Campaigns
+              Explore
             </Link>
             <Link
-              href="/about"
+              href="/zakaat"
               className="text-neutral-500 transition hover:text-primary-600"
             >
-              About
+              Zakaat
             </Link>
             <Link
-              href="/contact"
+              href="/login"
               className="text-neutral-500 transition hover:text-primary-600"
             >
-              Contact
+              Login
             </Link>
           </div>
 
