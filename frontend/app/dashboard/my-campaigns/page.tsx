@@ -14,6 +14,7 @@ import { getMyCampaigns } from "../../../services/campaignService";
 import type { Campaign, CampaignStatus } from "../../../types/campaign";
 import AnimatedSection from "../../../components/AnimatedSection";
 import EmptyState from "../../../components/EmptyState";
+import { getCampaignImageUrl } from "../../../lib/storage";
 
 /* ------------------------------------------------------------------ */
 /*  Status badge config                                               */
@@ -120,13 +121,19 @@ function CampaignCardWithStatus({ campaign }: { campaign: Campaign }) {
 
     const status = STATUS_STYLES[campaign.status] ?? STATUS_STYLES.pending;
 
+    const resolvedImage = campaign.image_url
+        ? campaign.image_url.startsWith("http")
+            ? campaign.image_url
+            : getCampaignImageUrl(campaign.image_url)
+        : null;
+
     return (
         <div className="group relative flex flex-col overflow-hidden rounded-2xl border border-neutral-200/80 bg-white shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-lg">
             {/* Image */}
             <div className="relative h-40 w-full overflow-hidden bg-gradient-to-br from-primary-100 to-accent-100">
-                {campaign.image_url ? (
+                {resolvedImage ? (
                     <Image
-                        src={campaign.image_url}
+                        src={resolvedImage}
                         alt={campaign.title}
                         fill
                         className="object-cover transition-transform duration-500 group-hover:scale-105"

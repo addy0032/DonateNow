@@ -1,9 +1,13 @@
 "use client";
 
-import { CheckCircle, ImageIcon, Moon } from "lucide-react";
+import { CheckCircle, Moon } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { type FormEvent, useState } from "react";
+import { type FormEvent, useState, useCallback } from "react";
 import { createCampaign } from "../../../services/campaignService";
+import { uploadCampaignImage } from "../../../lib/storage";
+import { supabase } from "../../../lib/supabaseClient";
+import ImageUpload from "../../../components/ImageUpload";
+import { useToast } from "../../../components/Toast";
 
 /* ------------------------------------------------------------------ */
 /*  Constants                                                         */
@@ -25,12 +29,14 @@ const CATEGORIES = [
 
 export default function CreateCampaignPage() {
     const router = useRouter();
+    const { toast } = useToast();
 
     const [title, setTitle] = useState("");
     const [description, setDescription] = useState("");
     const [category, setCategory] = useState(CATEGORIES[0]);
     const [targetAmount, setTargetAmount] = useState("");
-    const [imageUrl, setImageUrl] = useState("");
+    const [imageFile, setImageFile] = useState<File | null>(null);
+    const [imageUploading, setImageUploading] = useState(false);
     const [isZakaat, setIsZakaat] = useState(false);
 
     const [errors, setErrors] = useState<Record<string, string>>({});
@@ -57,21 +63,34 @@ export default function CreateCampaignPage() {
 
         setLoading(true);
         try {
+            let imagePath: string | undefined;
+
+            // Upload image first if selected
+            if (imageFile) {
+                setImageUploading(true);
+                const { data: { user } } = await supabase.auth.getUser();
+                if (!user) throw new Error("You must be signed in.");
+                imagePath = await uploadCampaignImage(imageFile, user.id);
+                setImageUploading(false);
+            }
+
             await createCampaign({
                 title: title.trim(),
                 description: description.trim(),
                 target_amount: Number(targetAmount),
-                image_url: imageUrl.trim() || undefined,
+                image_url: imagePath,
                 category,
                 is_zakaat: isZakaat,
             });
 
+            toast("Campaign submitted for approval!", "success");
             setSuccess(true);
             setTimeout(() => {
                 router.push("/dashboard");
             }, 1800);
         } catch (err) {
             console.error("[CreateCampaign] error:", err);
+            setImageUploading(false);
             setErrors({
                 global:
                     err instanceof Error ? err.message : "Failed to create campaign.",
@@ -184,27 +203,13 @@ export default function CreateCampaignPage() {
                         />
                     </div>
 
-                    {/* Image URL */}
-                    <div>
-                        <label
-                            htmlFor="campaign-image"
-                            className="mb-1.5 flex items-center gap-1.5 text-xs font-semibold tracking-wide text-neutral-600 uppercase"
-                        >
-                            <ImageIcon className="h-3.5 w-3.5" />
-                            Cover Image URL
-                            <span className="font-normal normal-case text-neutral-400">
-                                (optional)
-                            </span>
-                        </label>
-                        <input
-                            id="campaign-image"
-                            type="url"
-                            value={imageUrl}
-                            onChange={(e) => setImageUrl(e.target.value)}
-                            placeholder="https://example.com/photo.jpg"
-                            className="input-field"
-                        />
-                    </div>
+                    {/* Image Upload */}
+                    <ImageUpload
+                        onFileSelect={(file) => setImageFile(file)}
+                        onClear={() => setImageFile(null)}
+                        uploading={imageUploading}
+                        error={errors.image}
+                    />
 
                     {/* Zakaat toggle */}
                     <button

@@ -9,6 +9,7 @@ import DonationModal from "../../../components/DonationModal";
 import Navbar from "../../../components/Navbar";
 import { getCampaignById } from "../../../services/campaignService";
 import { getDonationsByCampaign } from "../../../services/donationService";
+import { getCampaignImageUrl } from "../../../lib/storage";
 import type { Campaign } from "../../../types/campaign";
 import type { Donation } from "../../../types/donation";
 
@@ -66,6 +67,13 @@ export default function CampaignDetailPage() {
 
     const donorCount = donations.length;
 
+    // Resolve storage path to public URL if needed
+    const resolvedImage = campaign.image_url
+        ? campaign.image_url.startsWith("http")
+            ? campaign.image_url
+            : getCampaignImageUrl(campaign.image_url)
+        : null;
+
     return (
         <div className="min-h-screen bg-neutral-50">
             <Navbar />
@@ -85,9 +93,9 @@ export default function CampaignDetailPage() {
                     <div className="lg:col-span-2">
                         {/* Image */}
                         <div className="relative h-64 w-full overflow-hidden rounded-2xl bg-gradient-to-br from-primary-100 to-accent-100 sm:h-80">
-                            {campaign.image_url ? (
+                            {resolvedImage ? (
                                 <Image
-                                    src={campaign.image_url}
+                                    src={resolvedImage}
                                     alt={campaign.title}
                                     fill
                                     className="object-cover"
