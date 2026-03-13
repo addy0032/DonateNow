@@ -6,6 +6,7 @@ import { useMemo, useState } from "react";
 import Navbar from "../../components/Navbar";
 import { useAuth } from "../../context/AuthContext";
 import { saveZakaatCalculation } from "../../services/zakaatService";
+import { useToast } from "../../components/Toast";
 
 /* ------------------------------------------------------------------ */
 /*  Page                                                              */
@@ -13,18 +14,22 @@ import { saveZakaatCalculation } from "../../services/zakaatService";
 
 export default function ZakaatPage() {
     const { user } = useAuth();
+    const { toast } = useToast();
 
-    const [assets, setAssets] = useState("");
+    const [gold, setGold] = useState("");
+    const [cash, setCash] = useState("");
+    const [investments, setInvestments] = useState("");
+    const [others, setOthers] = useState("");
     const [liabilities, setLiabilities] = useState("");
+
     const [saving, setSaving] = useState(false);
     const [saved, setSaved] = useState(false);
 
-    const net = useMemo(() => {
-        const a = Number(assets) || 0;
-        const l = Number(liabilities) || 0;
-        return Math.max(a - l, 0);
-    }, [assets, liabilities]);
+    const totalAssets = useMemo(() => {
+        return (Number(gold) || 0) + (Number(cash) || 0) + (Number(investments) || 0) + (Number(others) || 0);
+    }, [gold, cash, investments, others]);
 
+    const net = useMemo(() => Math.max(totalAssets - (Number(liabilities) || 0), 0), [totalAssets, liabilities]);
     const zakaatDue = useMemo(() => net * 0.025, [net]);
 
     async function handleSave() {
@@ -32,14 +37,16 @@ export default function ZakaatPage() {
         setSaving(true);
         try {
             await saveZakaatCalculation({
-                total_assets: Number(assets) || 0,
+                total_assets: totalAssets,
                 total_liabilities: Number(liabilities) || 0,
                 net_amount: net,
                 zakaat_due: zakaatDue,
             });
+            toast("Zakaat calculation saved!", "success");
             setSaved(true);
         } catch (err) {
             console.error("[Zakaat] save error:", err);
+            toast("Failed to save calculation.", "error");
         } finally {
             setSaving(false);
         }
@@ -85,7 +92,7 @@ export default function ZakaatPage() {
                                     </span>
                                 </p>
                                 <Link
-                                    href="/explore"
+                                    href="/explore?zakaat=true"
                                     className="mt-6 inline-flex items-center gap-2 rounded-xl bg-teal-600 px-6 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-teal-700"
                                 >
                                     <Heart className="h-4 w-4" />
@@ -108,64 +115,55 @@ export default function ZakaatPage() {
                                     </div>
                                 </div>
 
-                                {/* Assets */}
-                                <div className="mb-5">
-                                    <label
-                                        htmlFor="zakaat-assets"
-                                        className="mb-1.5 block text-xs font-semibold tracking-wide text-neutral-600 uppercase"
-                                    >
-                                        Total Assets (PKR)
-                                    </label>
-                                    <p className="mb-2 text-[11px] text-neutral-400">
-                                        Cash, savings, gold, silver, investments, business stock, property held for sale
-                                    </p>
-                                    <div className="relative">
-                                        <span className="pointer-events-none absolute top-1/2 left-4 -translate-y-1/2 select-none text-base font-semibold text-neutral-400">
-                                            Rs
-                                        </span>
-                                        <input
-                                            id="zakaat-assets"
-                                            type="number"
-                                            min="0"
-                                            value={assets}
-                                            onChange={(e) => setAssets(e.target.value)}
-                                            placeholder="0"
-                                            className="input-field text-lg font-semibold"
-                                            style={{ paddingLeft: "3.5rem" }}
-                                        />
-                                    </div>
+                                {/* Asset fields */}
+                                <div className="space-y-4 mb-5">
+                                    <AssetField
+                                        id="zakaat-gold"
+                                        label="Gold & Silver Value"
+                                        hint="Market value of all gold and silver you own"
+                                        value={gold}
+                                        onChange={setGold}
+                                    />
+                                    <AssetField
+                                        id="zakaat-cash"
+                                        label="Cash & Savings"
+                                        hint="Bank accounts, cash in hand, savings"
+                                        value={cash}
+                                        onChange={setCash}
+                                    />
+                                    <AssetField
+                                        id="zakaat-investments"
+                                        label="Investments"
+                                        hint="Stocks, mutual funds, business inventory"
+                                        value={investments}
+                                        onChange={setInvestments}
+                                    />
+                                    <AssetField
+                                        id="zakaat-others"
+                                        label="Other Assets"
+                                        hint="Property held for sale, receivables, other"
+                                        value={others}
+                                        onChange={setOthers}
+                                    />
+                                </div>
+
+                                {/* Total assets summary */}
+                                <div className="mb-5 flex items-center justify-between rounded-lg bg-teal-50 px-4 py-2.5 text-sm">
+                                    <span className="font-medium text-teal-700">Total Assets</span>
+                                    <span className="font-bold text-teal-700">{formatCurrency(totalAssets)}</span>
                                 </div>
 
                                 {/* Liabilities */}
-                                <div className="mb-7">
-                                    <label
-                                        htmlFor="zakaat-liabilities"
-                                        className="mb-1.5 block text-xs font-semibold tracking-wide text-neutral-600 uppercase"
-                                    >
-                                        Total Liabilities (PKR)
-                                    </label>
-                                    <p className="mb-2 text-[11px] text-neutral-400">
-                                        Debts, pending bills, loans, outstanding dues
-                                    </p>
-                                    <div className="relative">
-                                        <span className="pointer-events-none absolute top-1/2 left-4 -translate-y-1/2 select-none text-base font-semibold text-neutral-400">
-                                            Rs
-                                        </span>
-                                        <input
-                                            id="zakaat-liabilities"
-                                            type="number"
-                                            min="0"
-                                            value={liabilities}
-                                            onChange={(e) => setLiabilities(e.target.value)}
-                                            placeholder="0"
-                                            className="input-field text-lg font-semibold"
-                                            style={{ paddingLeft: "3.5rem" }}
-                                        />
-                                    </div>
-                                </div>
+                                <AssetField
+                                    id="zakaat-liabilities"
+                                    label="Total Liabilities"
+                                    hint="Debts, pending bills, loans, outstanding dues"
+                                    value={liabilities}
+                                    onChange={setLiabilities}
+                                />
 
                                 {/* Results */}
-                                <div className="mb-7 space-y-3 rounded-xl bg-neutral-50 p-5">
+                                <div className="mt-6 mb-7 space-y-3 rounded-xl bg-neutral-50 p-5">
                                     <div className="flex items-center justify-between text-sm">
                                         <span className="text-neutral-500">Net Zakaat-able Wealth</span>
                                         <span className="font-semibold text-neutral-800">
@@ -235,6 +233,51 @@ export default function ZakaatPage() {
                     </div>
                 </div>
             </section>
+        </div>
+    );
+}
+
+/* ------------------------------------------------------------------ */
+/*  Asset input field                                                  */
+/* ------------------------------------------------------------------ */
+
+function AssetField({
+    id,
+    label,
+    hint,
+    value,
+    onChange,
+}: {
+    id: string;
+    label: string;
+    hint: string;
+    value: string;
+    onChange: (v: string) => void;
+}) {
+    return (
+        <div>
+            <label
+                htmlFor={id}
+                className="mb-1 block text-xs font-semibold tracking-wide text-neutral-600 uppercase"
+            >
+                {label}
+            </label>
+            <p className="mb-1.5 text-[11px] text-neutral-400">{hint}</p>
+            <div className="relative">
+                <span className="pointer-events-none absolute top-1/2 left-4 -translate-y-1/2 select-none text-sm font-semibold text-neutral-400">
+                    Rs
+                </span>
+                <input
+                    id={id}
+                    type="number"
+                    min="0"
+                    value={value}
+                    onChange={(e) => onChange(e.target.value)}
+                    placeholder="0"
+                    className="input-field text-lg font-semibold"
+                    style={{ paddingLeft: "3rem" }}
+                />
+            </div>
         </div>
     );
 }

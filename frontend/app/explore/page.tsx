@@ -2,6 +2,7 @@
 
 import { Moon, Search, SlidersHorizontal, X } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
+import { useSearchParams } from "next/navigation";
 import CampaignCard from "../../components/CampaignCard";
 import Navbar from "../../components/Navbar";
 import { getApprovedCampaigns } from "../../services/campaignService";
@@ -27,6 +28,7 @@ const CATEGORIES = [
 /* ------------------------------------------------------------------ */
 
 export default function ExplorePage() {
+    const searchParams = useSearchParams();
     const [campaigns, setCampaigns] = useState<Campaign[]>([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState("");
@@ -34,7 +36,7 @@ export default function ExplorePage() {
     // Filters
     const [search, setSearch] = useState("");
     const [category, setCategory] = useState("All");
-    const [zakaatOnly, setZakaatOnly] = useState(false);
+    const [zakaatOnly, setZakaatOnly] = useState(searchParams.get("zakaat") === "true");
 
     // Fetch campaigns on mount.
     useEffect(() => {

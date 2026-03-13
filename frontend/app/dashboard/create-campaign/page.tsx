@@ -1,8 +1,9 @@
 "use client";
 
-import { CheckCircle, Moon } from "lucide-react";
+import { AlertTriangle, CheckCircle, Moon, Shield } from "lucide-react";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { type FormEvent, useState, useCallback } from "react";
+import { type FormEvent, useEffect, useState, useCallback } from "react";
 import { createCampaign } from "../../../services/campaignService";
 import { uploadCampaignImage } from "../../../lib/storage";
 import { supabase } from "../../../lib/supabaseClient";
@@ -31,6 +32,22 @@ export default function CreateCampaignPage() {
     const router = useRouter();
     const { toast } = useToast();
 
+    /* ---- Verification gate ---- */
+    const [verified, setVerified] = useState<boolean | null>(null); // null = loading
+
+    useEffect(() => {
+        (async () => {
+            const { data: { user } } = await supabase.auth.getUser();
+            if (!user) { setVerified(false); return; }
+            const { data } = await supabase
+                .from("profiles")
+                .select("ngo_verified")
+                .eq("id", user.id)
+                .single();
+            setVerified(data?.ngo_verified === true);
+        })();
+    }, []);
+
     const [title, setTitle] = useState("");
     const [description, setDescription] = useState("");
     const [category, setCategory] = useState(CATEGORIES[0]);
@@ -42,6 +59,41 @@ export default function CreateCampaignPage() {
     const [errors, setErrors] = useState<Record<string, string>>({});
     const [loading, setLoading] = useState(false);
     const [success, setSuccess] = useState(false);
+
+    /* ---- Verification gate UI ---- */
+    if (verified === null) {
+        return (
+            <div className="flex items-center justify-center py-32">
+                <div className="h-6 w-6 animate-spin rounded-full border-2 border-primary-200 border-t-primary-600" />
+            </div>
+        );
+    }
+
+    if (verified === false) {
+        return (
+            <div className="flex items-center justify-center py-20">
+                <div className="mx-4 max-w-md rounded-2xl border border-amber-200 bg-amber-50 p-8 text-center shadow-sm">
+                    <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-amber-100">
+                        <AlertTriangle className="h-7 w-7 text-amber-600" />
+                    </div>
+                    <h2 className="text-lg font-bold text-neutral-900">
+                        Verification Required
+                    </h2>
+                    <p className="mt-2 text-sm text-neutral-600">
+                        Your organization must be verified before you can create campaigns.
+                        Please upload your verification documents first.
+                    </p>
+                    <Link
+                        href="/dashboard/ngo-verification"
+                        className="mt-5 inline-flex items-center gap-2 rounded-xl bg-primary-600 px-6 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-primary-700"
+                    >
+                        <Shield className="h-4 w-4" />
+                        Upload Documents
+                    </Link>
+                </div>
+            </div>
+        );
+    }
 
     /* ---- Validation ---- */
     function validate(): boolean {

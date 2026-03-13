@@ -60,3 +60,24 @@ export async function getMyZakaatHistory(): Promise<ZakaatCalculation[]> {
     if (error) throw new Error(error.message);
     return (data ?? []) as ZakaatCalculation[];
 }
+
+/**
+ * Get all Zakaat-specific donations for the current user.
+ */
+export async function getMyZakaatDonations() {
+    const {
+        data: { user },
+    } = await supabase.auth.getUser();
+
+    if (!user) throw new Error("You must be signed in.");
+
+    const { data, error } = await supabase
+        .from("donations")
+        .select("*")
+        .eq("donor_id", user.id)
+        .eq("is_zakaat", true)
+        .order("created_at", { ascending: false });
+
+    if (error) throw new Error(error.message);
+    return data ?? [];
+}

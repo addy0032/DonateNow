@@ -10,6 +10,8 @@ import {
     PlusCircle,
     Search,
     Settings,
+    Shield,
+    ShieldCheck,
     Users,
     Wallet,
 } from "lucide-react";
@@ -33,6 +35,8 @@ interface NavItem {
 const ADMIN_NAV: NavItem[] = [
     { href: "/dashboard", label: "Overview", icon: LayoutDashboard },
     { href: "/dashboard/admin/campaigns", label: "Approve Campaigns", icon: CheckCircle },
+    { href: "/dashboard/admin/ngo-verifications", label: "NGO Verifications", icon: Shield },
+    { href: "/dashboard/admin/admin-requests", label: "Admin Requests", icon: ShieldCheck },
     { href: "/dashboard/admin/analytics", label: "Analytics", icon: BarChart3 },
     { href: "/dashboard/users", label: "Users", icon: Users },
     { href: "/dashboard/reports", label: "Reports", icon: BarChart3 },
@@ -42,12 +46,14 @@ const NGO_NAV: NavItem[] = [
     { href: "/dashboard/my-campaigns", label: "My Campaigns", icon: LayoutDashboard },
     { href: "/dashboard/create-campaign", label: "Create Campaign", icon: PlusCircle },
     { href: "/dashboard/donations", label: "Donations", icon: Wallet },
+    { href: "/dashboard/ngo-verification", label: "Verification", icon: Shield },
 ];
 
 const DONOR_NAV: NavItem[] = [
     { href: "/dashboard", label: "My Donations", icon: Heart },
     { href: "/explore", label: "Explore Campaigns", icon: Search },
-    { href: "/dashboard/zakaat", label: "Zakaat History", icon: Moon },
+    { href: "/dashboard/zakaat-history", label: "Zakaat History", icon: Moon },
+    { href: "/request-admin", label: "Request Admin", icon: ShieldCheck },
 ];
 
 function getNavForRole(roleId: string | null): NavItem[] {
