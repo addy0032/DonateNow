@@ -87,15 +87,28 @@ export async function getMyDocuments(): Promise<NgoDocument[]> {
 /* ------------------------------------------------------------------ */
 
 export async function getAllPendingVerifications(): Promise<NgoVerificationRow[]> {
-    const { data, error } = await supabase
+    // Fetch documents
+    const { data: docs, error } = await supabase
         .from("ngo_documents")
-        .select("*, profiles:user_id(full_name, email, organization_name)")
+        .select("*")
         .order("created_at", { ascending: false });
 
     if (error) throw new Error(error.message);
+    if (!docs || docs.length === 0) return [];
 
-    return (data ?? []).map((row: Record<string, unknown>) => {
-        const profile = row.profiles as Record<string, string> | null;
+    // Fetch profiles for all unique user_ids
+    const userIds = [...new Set(docs.map((d: Record<string, unknown>) => d.user_id as string))];
+    const { data: profiles } = await supabase
+        .from("profiles")
+        .select("id, full_name, email, organization_name")
+        .in("id", userIds);
+
+    const profileMap = new Map(
+        (profiles ?? []).map((p: Record<string, unknown>) => [p.id as string, p]),
+    );
+
+    return docs.map((row: Record<string, unknown>) => {
+        const profile = profileMap.get(row.user_id as string) as Record<string, string> | undefined;
         return {
             id: row.id as string,
             user_id: row.user_id as string,
